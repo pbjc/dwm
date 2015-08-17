@@ -3,14 +3,21 @@
 /* appearance */
 static const char font[] = "-*-terminus-medium-r-*-*-16-*-*-*-*-*-*-*";
 
-#define NUMCOLORS         4             // need at least 3
+#define NUMCOLORS 12
 static const char colors[NUMCOLORS][ColLast][8] = {
-   // border   foreground  background
-   { "#cccccc", "#000000", "#cccccc" },  // 0 = normal
-   { "#0066ff", "#ffffff", "#0066ff" },  // 1 = selected
-   { "#0066ff", "#0066ff", "#ffffff" },  // 2 = urgent/warning
-   { "#ff0000", "#ffffff", "#ff0000" },  // 3 = error
-   // add more here
+  // border foreground background
+  { "#282a2e", "#777b81", "#1d1f21" }, // 1 = normal (grey on black)
+  { "#f0c674", "#c5c8c6", "#1d1f21" }, // 2 = selected (white on black)
+  { "#dc322f", "#1d1f21", "#f0c674" }, // 3 = urgent (black on yellow)
+  { "#282a2e", "#282a2e", "#1d1f21" }, // 4 = darkgrey on black (for glyphs)
+  { "#282a2e", "#1d1f21", "#282a2e" }, // 5 = black on darkgrey (for glyphs)
+  { "#282a2e", "#cc6666", "#1d1f21" }, // 6 = red on black
+  { "#282a2e", "#b5bd68", "#1d1f21" }, // 7 = green on black
+  { "#282a2e", "#de935f", "#1d1f21" }, // 8 = orange on black
+  { "#282a2e", "#f0c674", "#282a2e" }, // 9 = yellow on darkgrey
+  { "#282a2e", "#81a2be", "#282a2e" }, // A = blue on darkgrey
+  { "#282a2e", "#b294bb", "#282a2e" }, // B = magenta on darkgrey
+  { "#282a2e", "#8abeb7", "#282a2e" }, // C = cyan on darkgrey
 };
 
 static const unsigned int borderpx  = 2;        /* border pixel of windows */
