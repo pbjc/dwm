@@ -1,0 +1,42 @@
+#!/bin/bash
+
+print_mem_used() {
+  mem_used="$(free -m | awk 'NR==3 {print $3}')"
+  echo -ne "${mem_used}M"
+}
+
+print_wifi() {
+  essid=$( /sbin/iwgetid -r ) 
+  if [ -n "$DWM_ESSID" ]
+  then
+    essid="--"
+  fi
+  echo -ne "${essid}"
+}
+
+print_volume() {
+  state="$(amixer get Master | tail -n1 | sed -r 's/.*\[(.*)\]$/\1/')"
+  if [ "$state" = "on" ]
+  then
+    volume="$(amixer get Master | tail -n1 | sed -r 's/.*\[(.*)%\].*/\1/')"
+  else
+    volume="0"
+  fi
+  echo -ne "${volume}% Volume"
+}
+
+print_battery() {
+  battery=$(( `cat /sys/class/power_supply/BAT0/energy_now` * 100 / `cat /sys/class/power_supply/BAT0/energy_full` ))
+  battery_state=`cat /sys/class/power_supply/BAT0/status`
+  echo -ne "${battery}% ${battery_state}"
+}
+
+print_datetime() {
+  datetime="$(date "+%a %d %b %I:%M %p")"
+  echo -ne "${datetime}"
+}
+
+while true; do
+  xsetroot -name "$(print_mem_used) | $(print_wifi) | $(print_volume) | $(print_battery) | $(print_datetime)"
+  sleep 0.5
+done
