@@ -1,8 +1,30 @@
 #!/bin/bash
 
+# color codes from dwm/config.h
+color_grey="\x01" # grey on black
+color_white="\x02" # white on black
+color_darkgrey="\x04" # darkgrey on black
+color_black="\x05" # black on darkgrey
+color_red="\x06" # red on black
+color_green="\x07" # green on black
+color_orange="\x08" # orange on black
+color_yellow="\x09" # yellow on black
+color_blue="\x0A" # blue on darkgrey
+color_magenta="\x0B" # magenta on darkgrey
+color_cyan="\x0C" # cyan on darkgrey
+
+# icon glyphs from xbmicons.bdf
+glyph_mem="\uE010"
+glyph_vol="\uE015"
+glyph_time="\uE016"
+glyph_wifi="\uE01E"
+glyph_bat="\uE01F"
+sep_solid="\uE01A"
+sep_line="\uE01B"
+
 print_mem_used() {
   mem_used="$(free -m | awk 'NR==3 {print $3}')"
-  echo -ne "${mem_used}M"
+  echo -ne "${color_darkgrey}${sep_solid}${color_yellow}${glyph_mem} ${mem_used}M "
 }
 
 print_wifi() {
@@ -11,7 +33,13 @@ print_wifi() {
   then
     essid="--"
   fi
-  echo -ne "${essid}"
+  echo -ne "${color_blue}${sep_line} ${glyph_wifi} ${essid} "
+}
+
+print_battery() {
+  battery=$(( `cat /sys/class/power_supply/BAT0/energy_now` * 100 / `cat /sys/class/power_supply/BAT0/energy_full` ))
+  battery_state=`cat /sys/class/power_supply/BAT0/status`
+  echo -ne "${color_cyan}${sep_line} ${glyph_bat} ${battery}% ${battery_state} "
 }
 
 print_volume() {
@@ -22,21 +50,15 @@ print_volume() {
   else
     volume="0"
   fi
-  echo -ne "${volume}% Volume"
-}
-
-print_battery() {
-  battery=$(( `cat /sys/class/power_supply/BAT0/energy_now` * 100 / `cat /sys/class/power_supply/BAT0/energy_full` ))
-  battery_state=`cat /sys/class/power_supply/BAT0/status`
-  echo -ne "${battery}% ${battery_state}"
+  echo -ne "${color_magenta}${sep_line} ${glyph_vol} ${volume}% "
 }
 
 print_datetime() {
-  datetime="$(date "+%a %d %b %I:%M %p")"
-  echo -ne "${datetime}"
+  datetime="$(date "+%a %d %b ${sep_line} %I:%M %p")"
+  echo -ne "${color_black}${sep_solid}${color_white}${glyph_time} ${datetime} "
 }
 
 while true; do
-  xsetroot -name "$(print_mem_used) | $(print_wifi) | $(print_volume) | $(print_battery) | $(print_datetime)"
+  xsetroot -name "$(print_mem_used)$(print_wifi)$(print_battery)$(print_volume)$(print_datetime)"
   sleep 0.5
 done
