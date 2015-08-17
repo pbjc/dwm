@@ -1,14 +1,19 @@
 /* See LICENSE file for copyright and license details. */
 
 /* appearance */
-static const char font[]            = "-*-terminus-medium-r-*-*-16-*-*-*-*-*-*-*";
-static const char normbordercolor[] = "#444444";
-static const char normbgcolor[]     = "#222222";
-static const char normfgcolor[]     = "#bbbbbb";
-static const char selbordercolor[]  = "#005577";
-static const char selbgcolor[]      = "#005577";
-static const char selfgcolor[]      = "#eeeeee";
-static const unsigned int borderpx  = 1;        /* border pixel of windows */
+static const char font[] = "-*-terminus-medium-r-*-*-16-*-*-*-*-*-*-*";
+
+#define NUMCOLORS         4             // need at least 3
+static const char colors[NUMCOLORS][ColLast][8] = {
+   // border   foreground  background
+   { "#cccccc", "#000000", "#cccccc" },  // 0 = normal
+   { "#0066ff", "#ffffff", "#0066ff" },  // 1 = selected
+   { "#0066ff", "#0066ff", "#ffffff" },  // 2 = urgent/warning
+   { "#ff0000", "#ffffff", "#ff0000" },  // 3 = error
+   // add more here
+};
+
+static const unsigned int borderpx  = 2;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const Bool showbar           = True;     /* False means no bar */
 static const Bool topbar            = True;     /* False means bottom bar */
@@ -18,14 +23,13 @@ static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
 
 static const Rule rules[] = {
 	/* class      instance    title       tags mask     isfloating   monitor */
-	{ "Gimp",       NULL,       NULL,       0,            True,        -1 },
-	{ "Iceweasel",  NULL,       NULL,       1 << 8,       False,       -1 },
+	{ "Google-chrome",  NULL,       NULL,       1 << 0,       False,       -1 },
 };
 
 /* layout(s) */
-static const float mfact      = 0.55; /* factor of master area size [0.05..0.95] */
+static const float mfact      = 0.50; /* factor of master area size [0.05..0.95] */
 static const int nmaster      = 1;    /* number of clients in master area */
-static const Bool resizehints = True; /* True means respect size hints in tiled resizals */
+static const Bool resizehints = False; /* True means respect size hints in tiled resizals */
 
 static const Layout layouts[] = {
 	/* symbol     arrange function */
@@ -35,7 +39,7 @@ static const Layout layouts[] = {
 };
 
 /* key definitions */
-#define MODKEY Mod1Mask
+#define MODKEY Mod4Mask
 #define TAGKEYS(KEY,TAG) \
 	{ MODKEY,                       KEY,      view,           {.ui = 1 << TAG} }, \
 	{ MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \
@@ -46,13 +50,29 @@ static const Layout layouts[] = {
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
 
 /* commands */
-static const char *dmenucmd[] = { "dmenu_run", "-fn", font, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbgcolor, "-sf", selfgcolor, NULL };
-static const char *termcmd[]  = { "x-terminal-emulator", NULL };
+static const char *dmenucmd[]    = { "dmenu_run", "-fn", font, "-nb", colors[0][ColBG], "-nf", colors[0][ColFG],"-sb", colors[1][ColBG], "-sf", colors[1][ColFG], NULL };
+static const char *termcmd[]     = { "urxvt", NULL };
+static const char *brupcmd[]     = { "xbacklight", "-inc", "5", NULL };
+static const char *brdowncmd[]   = { "xbacklight", "-dec", "5", NULL };
+static const char *volupcmd[]    = { "amixer", "-q", "sset", "Master", "5%+", NULL };
+static const char *voltogcmd[]   = { "amixer", "-q", "sset", "Master", "toggle", NULL };
+static const char *voldowncmd[] = { "amixer", "-q", "sset", "Master", "5%-", NULL };
+
+#define BRIGHTNESS_UP   0x1008ff05
+#define BRIGHTNESS_DOWN 0x1008ff06
+#define VOLUME_UP       0x1008ff13
+#define VOLUME_TOG      0x1008ff12
+#define VOLUME_DOWN     0x1008ff11
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
+        { False,                        BRIGHTNESS_UP, spawn,      {.v = brupcmd } },
+        { False,                        BRIGHTNESS_DOWN, spawn,    {.v = brdowncmd } },
+        { False,                        VOLUME_UP, spawn,          {.v = volupcmd } },
+        { False,                        VOLUME_TOG, spawn,         {.v = voltogcmd } },
+        { False,                        VOLUME_DOWN, spawn,        {.v = voldowncmd } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },

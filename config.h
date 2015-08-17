@@ -3,12 +3,16 @@
 /* appearance */
 static const char font[] = "-*-terminus-medium-r-*-*-16-*-*-*-*-*-*-*";
 
-static const char normbordercolor[] = "#444444";
-static const char normbgcolor[]     = "#222222";
-static const char normfgcolor[]     = "#bbbbbb";
-static const char selbordercolor[]  = "#005577";
-static const char selbgcolor[]      = "#005577";
-static const char selfgcolor[]      = "#eeeeee";
+#define NUMCOLORS         4             // need at least 3
+static const char colors[NUMCOLORS][ColLast][8] = {
+   // border   foreground  background
+   { "#cccccc", "#000000", "#cccccc" },  // 0 = normal
+   { "#0066ff", "#ffffff", "#0066ff" },  // 1 = selected
+   { "#0066ff", "#0066ff", "#ffffff" },  // 2 = urgent/warning
+   { "#ff0000", "#ffffff", "#ff0000" },  // 3 = error
+   // add more here
+};
+
 static const unsigned int borderpx  = 2;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const Bool showbar           = True;     /* False means no bar */
@@ -46,23 +50,29 @@ static const Layout layouts[] = {
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
 
 /* commands */
-static const char *dmenucmd[] = { "dmenu_run", "-fn", font, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbgcolor, "-sf", selfgcolor, NULL };
-static const char *termcmd[]  = { "urxvt", NULL };
-static const char *volupcmd[]      = { "amixer", "-q", "sset", "Master", "5%+", NULL };
-static const char *voldncmd[]      = { "amixer", "-q", "sset", "Master", "5%-", NULL };
-static const char *voltogcmd[]     = { "amixer", "-q", "sset", "Master", "toggle", NULL };
-static const char *mbrupcmd[]      = { "xbacklight", "-inc", "5", NULL };
-static const char *mbrdncmd[]      = { "xbacklight", "-dec", "5", NULL };
+static const char *dmenucmd[]    = { "dmenu_run", "-fn", font, "-nb", colors[0][ColBG], "-nf", colors[0][ColFG],"-sb", colors[1][ColBG], "-sf", colors[1][ColFG], NULL };
+static const char *termcmd[]     = { "urxvt", NULL };
+static const char *brupcmd[]     = { "xbacklight", "-inc", "5", NULL };
+static const char *brdowncmd[]   = { "xbacklight", "-dec", "5", NULL };
+static const char *volupcmd[]    = { "amixer", "-q", "sset", "Master", "5%+", NULL };
+static const char *voltogcmd[]   = { "amixer", "-q", "sset", "Master", "toggle", NULL };
+static const char *voldowncmd[] = { "amixer", "-q", "sset", "Master", "5%-", NULL };
+
+#define BRIGHTNESS_UP   0x1008ff05
+#define BRIGHTNESS_DOWN 0x1008ff06
+#define VOLUME_UP       0x1008ff13
+#define VOLUME_TOG      0x1008ff12
+#define VOLUME_DOWN     0x1008ff11
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
-        { False,                        0x1008ff13, spawn,         {.v = volupcmd } },
-        { False,                        0x1008ff11, spawn,         {.v = voldncmd } },
-        { False,                        0x1008ff12, spawn,         {.v = voltogcmd } },
-        { False,                        0x1008ff05, spawn,         {.v = mbrupcmd } },
-        { False,                        0x1008ff06, spawn,         {.v = mbrdncmd } },
+        { False,                        BRIGHTNESS_UP, spawn,      {.v = brupcmd } },
+        { False,                        BRIGHTNESS_DOWN, spawn,    {.v = brdowncmd } },
+        { False,                        VOLUME_UP, spawn,          {.v = volupcmd } },
+        { False,                        VOLUME_TOG, spawn,         {.v = voltogcmd } },
+        { False,                        VOLUME_DOWN, spawn,        {.v = voldowncmd } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
