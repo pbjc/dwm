@@ -30,9 +30,9 @@ print_mem_used() {
 
 print_wifi() {
   essid=$( /sbin/iwgetid -r ) 
-  if [ -n "$DWM_ESSID" ]
+  if [ -z "${essid}" ]
   then
-    essid="--"
+    essid="---"
   fi
   echo -ne "${color_blue}${sep_line} ${glyph_wifi} ${essid} "
 }
