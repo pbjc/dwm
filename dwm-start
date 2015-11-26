@@ -1,0 +1,12 @@
+#!/bin/bash
+
+~/.xinitrc
+
+dwm-statusbar &
+redshift &
+
+dwm
+
+pkill redshift
+pkill dwm-statusbar
+exit
