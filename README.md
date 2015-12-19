@@ -5,7 +5,7 @@ dwm is an extremely fast, small, and dynamic window manager for X.
 
 Requirements
 ------------
-In order to build dwm you need the Xlib header files and suckless-tools.
+To build dwm you'll need the Xlib header files and suckless-tools.
 
 
 Installation
@@ -18,9 +18,9 @@ necessary as root):
 
     make clean install
 
-To get the fonts working, first download the fonts from my dotfiles repo. Then
-add these lines to your `.xinitrc` (replacing `${FONTDIR}` with the directory
-you placed the fonts:
+To get the fonts working, download the fonts from my dotfiles repo. Then add
+these lines to your `.xinitrc` (replacing `${FONTDIR}` with the directory you
+placed the fonts):
 
     xset +fp ${FONTDIR}
     xset fp rehash
