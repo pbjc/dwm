@@ -5,7 +5,7 @@ dwm is an extremely fast, small, and dynamic window manager for X.
 
 Requirements
 ------------
-To build dwm you'll need the Xlib header files and suckless-tools.
+You'll need the Xlib header files and suckless-tools.
 
 
 Installation
@@ -33,12 +33,10 @@ Running dwm
 In order to set dwm as a login session, add a .desktop file for dwm to
 `/usr/share/xsessions/`.
 
-You can just run `dwm` to start dwm using startx, but I personally use a start
-script (`dwm-start`) which starts some background processes I want, runs my
-`.xinitrc`, and then starts dwm.
+Run `dwm` to start dwm with startx.
 
 In order to display status info in the bar, you can do something
-like this in your `.xinitrc`:
+like this:
 
     while xsetroot -name "`date` `uptime | sed 's/.*,//'`"
     do
@@ -46,12 +44,4 @@ like this in your `.xinitrc`:
     done &
     exec dwm
 
-Alternatively, use my statusbar by running it as a background process.
-
-    exec dwm-statusbar &
-
-
-Configuration
--------------
-The configuration of dwm is done by creating a custom config.h
-and (re)compiling the source code.
+I've included my own statusbar in this repo.
